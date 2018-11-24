@@ -10,7 +10,7 @@ const examples = {
   'example1':
       'I am a talker , you know ; I am rather a talker ; and now and then I have let a thing escape me which I should not .',
   'example2':
-      'Soon Starbuck returned with a letter in his hand .',
+      'But the scheme met with no opposition on the part of the other two ; they swore they were ready for that , or for any other mad thing , for anything in short but a surrender .',
   'example3':
       'Now to the ascent of that steep savage hill Satan had journeyed on , pensive and slow ; But further way found none , so thick entwined , As one continued brake , the undergrowth Of shrubs and tangling bushes had perplexed All path of man or beast that passed that way .'      
 };
