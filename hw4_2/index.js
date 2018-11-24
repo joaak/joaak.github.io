@@ -8,11 +8,11 @@ const HOSTED_URLS = {
 
 const examples = {
   'example1':
-      'Alice was beginning to get very tired of sitting by her sister on the bank.',
+      'I am a talker , you know ; I am rather a talker ; and now and then I have let a thing escape me which I should not .',
   'example2':
-      'Buda-Pesth seems a wonderful place.',
+      'Soon Starbuck returned with a letter in his hand .',
   'example3':
-      'Scepticism was as much the result of knowledge, as knowledge is of scepticism.'      
+      'Now to the ascent of that steep savage hill Satan had journeyed on , pensive and slow ; But further way found none , so thick entwined , As one continued brake , the undergrowth Of shrubs and tangling bushes had perplexed All path of man or beast that passed that way .'      
 };
 
 function status(statusText) {
