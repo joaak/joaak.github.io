@@ -16,14 +16,8 @@
 
         Screenshots : <p>
       <canvas  id="myCanvas" width="224" height="224"></canvas>  
-      
-  <div class="create-model">
-    <button id="load-model" style="display:none"> Load model </button>
-  </div>
   
   </body>
-  
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"> </script>
   
   <script>
   
@@ -90,21 +84,23 @@
         console.log(video);
       }
       
+  </script>
+  
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"> 
+    
       //------------
       // MODEL STUFF
       //------------
       
-      import * as tf from ‘@tensorflow/tfjs’;
-      
-      const model = await tf.loadModel({
+      const model = await tfjs.loadModel({
       'modelTopology': model_js/tensorflowjs_model.pb
       'weightsManifest': model_js/weights_manifest.json
       });
       
       const image = document.getElementById(‘myCanvas’);
-      const input = tf.fromPixels(image);
+      const input = tfjs.fromPixels(image);
       
       model.predict(input).print();
-      
   </script>
+  
 </html>
