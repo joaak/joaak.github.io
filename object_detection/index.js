@@ -1,8 +1,10 @@
-import my_model from './model.js';
+import my_model, { downloadModel } from './model.js';
 
-// const model = downloadModel();
-// console.log(model);
-const boxes = my_model();
+const image = document.document.getElementById("myCanvas");
+      
+const model = downloadModel();
+console.log(model);
+const boxes = my_model(image, model);
 console.log(boxes);
 
 boxes.forEach(box => {
