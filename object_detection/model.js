@@ -15,7 +15,10 @@ const DEFAULT_IOU_THRESHOLD = 0.4;
 const DEFAULT_CLASS_PROB_THRESHOLD = 0.4
 const MODEL_URL = './model_js/tensorflowjs_model.pb'
 const WEIGHTS_URL = './model_js/weights_manifest.json'
-const DEFAULT_INPUT = document.getElementById("myCanvas")
+
+export async function downloadModel() {
+  return await tf.loadModel(tf.loadFrozenModel(MODEL_URL, WEIGHTS_URL));
+}
 
 /**
  * Given an input image and model, outputs bounding boxes of detected
@@ -47,7 +50,8 @@ const DEFAULT_INPUT = document.getElementById("myCanvas")
  * `options.classNames`.
  */
 async function my_model(
-  input = DEFAULT_INPUT,
+  input,
+  model
   {
     classProbThreshold = DEFAULT_CLASS_PROB_THRESHOLD,
     iouThreshold = DEFAULT_IOU_THRESHOLD,
@@ -60,9 +64,7 @@ async function my_model(
     classNames = class_names,
   } = {},
 ) 
-{
-    const model = tf.loadFrozenModel(MODEL_URL, WEIGHTS_URL);
-          
+{    
     const outs = tf.tidy(() => { // Keep as one var to dispose easier
     const activation = model.execute({input: tf.fromPixels(input)});
 
