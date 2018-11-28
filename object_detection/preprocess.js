@@ -1,4 +1,4 @@
-export const model_ANCHORS = tfjs.tensor2d([
+export const model_ANCHORS = tf.tensor2d([
   [0.57273, 0.677385], [1.87446, 2.06253], [3.33843, 5.47434],
   [7.88282, 3.52778], [9.77052, 9.16828],
 ]);
@@ -9,42 +9,42 @@ export function model_filter_boxes(
   box_class_probs,
   threshold
 ) {
-  const box_scores = tfjs.mul(box_confidence, box_class_probs);
-  const box_classes = tfjs.argMax(box_scores, -1);
-  const box_class_scores = tfjs.max(box_scores, -1);
+  const box_scores = tf.mul(box_confidence, box_class_probs);
+  const box_classes = tf.argMax(box_scores, -1);
+  const box_class_scores = tf.max(box_scores, -1);
 
-  const prediction_mask = tfjs.greaterEqual(box_class_scores, tfjs.scalar(threshold)).as1D();
+  const prediction_mask = tf.greaterEqual(box_class_scores, tf.scalar(threshold)).as1D();
 
   const N = prediction_mask.size
   // linspace start/stop is inclusive.
-  const all_indices = tfjs.linspace(0, N - 1, N).toInt();
-  const neg_indices = tfjs.zeros([N], 'int32');
-  const indices = tfjs.where(prediction_mask, all_indices, neg_indices);
+  const all_indices = tf.linspace(0, N - 1, N).toInt();
+  const neg_indices = tf.zeros([N], 'int32');
+  const indices = tf.where(prediction_mask, all_indices, neg_indices);
 
   return [
-    tfjs.gather(boxes.reshape([N, 4]), indices),
-    tfjs.gather(box_class_scores.flatten(), indices),
-    tfjs.gather(box_classes.flatten(), indices),
+    tf.gather(boxes.reshape([N, 4]), indices),
+    tf.gather(box_class_scores.flatten(), indices),
+    tf.gather(box_classes.flatten(), indices),
   ];
 }
 
 /**
  * Given XY and WH tensor outputs of _head, returns corner coordinates.
- * @param {tfjs.Tensor} box_xy Bounding box center XY coordinate Tensor
- * @param {tfjs.Tensor} box_wh Bounding box WH Tensor
- * @returns {tfjs.Tensor} Bounding box corner Tensor
+ * @param {tf.Tensor} box_xy Bounding box center XY coordinate Tensor
+ * @param {tf.Tensor} box_wh Bounding box WH Tensor
+ * @returns {tf.Tensor} Bounding box corner Tensor
  */
 export function model_boxes_to_corners(box_xy, box_wh) {
-  const two = tfjs.tensor1d([2.0]);
-  const box_mins = tfjs.sub(box_xy, tfjs.div(box_wh, two));
-  const box_maxes = tfjs.add(box_xy, tfjs.div(box_wh, two));
+  const two = tf.tensor1d([2.0]);
+  const box_mins = tf.sub(box_xy, tf.div(box_wh, two));
+  const box_maxes = tf.add(box_xy, tf.div(box_wh, two));
 
   const dim_0 = box_mins.shape[0];
   const dim_1 = box_mins.shape[1];
   const dim_2 = box_mins.shape[2];
   const size = [dim_0, dim_1, dim_2, 1];
 
-  return tfjs.concat([
+  return tf.concat([
     box_mins.slice([0, 0, 0, 1], size),
     box_mins.slice([0, 0, 0, 0], size),
     box_maxes.slice([0, 0, 0, 1], size),
@@ -56,7 +56,7 @@ export function model_boxes_to_corners(box_xy, box_wh) {
 export function model_head(feats, anchors, num_classes) {
   const num_anchors = anchors.shape[0];
 
-  const anchors_tensor = tfjs.reshape(anchors, [1, 1, num_anchors, 2]);
+  const anchors_tensor = tf.reshape(anchors, [1, 1, num_anchors, 2]);
 
   let conv_dims = feats.shape.slice(1, 3);
 
@@ -64,27 +64,27 @@ export function model_head(feats, anchors, num_classes) {
   const conv_dims_0 = conv_dims[0];
   const conv_dims_1 = conv_dims[1];
 
-  let conv_height_index = tfjs.range(0, conv_dims[0]);
-  let conv_width_index = tfjs.range(0, conv_dims[1]);
-  conv_height_index = tfjs.tile(conv_height_index, [conv_dims[1]])
+  let conv_height_index = tf.range(0, conv_dims[0]);
+  let conv_width_index = tf.range(0, conv_dims[1]);
+  conv_height_index = tf.tile(conv_height_index, [conv_dims[1]])
 
-  conv_width_index = tfjs.tile(tfjs.expandDims(conv_width_index, 0), [conv_dims[0], 1]);
-  conv_width_index = tfjs.transpose(conv_width_index).flatten();
+  conv_width_index = tf.tile(tf.expandDims(conv_width_index, 0), [conv_dims[0], 1]);
+  conv_width_index = tf.transpose(conv_width_index).flatten();
 
-  let conv_index = tfjs.transpose(tfjs.stack([conv_height_index, conv_width_index]));
-  conv_index = tfjs.reshape(conv_index, [conv_dims[0], conv_dims[1], 1, 2])
-  conv_index = tfjs.cast(conv_index, feats.dtype);
+  let conv_index = tf.transpose(tf.stack([conv_height_index, conv_width_index]));
+  conv_index = tf.reshape(conv_index, [conv_dims[0], conv_dims[1], 1, 2])
+  conv_index = tf.cast(conv_index, feats.dtype);
 
-  feats = tfjs.reshape(feats, [conv_dims[0], conv_dims[1], num_anchors, num_classes + 5]);
-  conv_dims = tfjs.cast(tfjs.reshape(tfjs.tensor1d(conv_dims), [1,1,1,2]), feats.dtype);
+  feats = tf.reshape(feats, [conv_dims[0], conv_dims[1], num_anchors, num_classes + 5]);
+  conv_dims = tf.cast(tf.reshape(tf.tensor1d(conv_dims), [1,1,1,2]), feats.dtype);
 
-  let box_xy = tfjs.sigmoid(feats.slice([0,0,0,0], [conv_dims_0, conv_dims_1, num_anchors, 2]))
-  let box_wh = tfjs.exp(feats.slice([0,0,0, 2], [conv_dims_0, conv_dims_1, num_anchors, 2]))
-  const box_confidence = tfjs.sigmoid(feats.slice([0,0,0, 4], [conv_dims_0, conv_dims_1, num_anchors, 1]))
-  const box_class_probs = tfjs.softmax(feats.slice([0,0,0, 5],[conv_dims_0, conv_dims_1, num_anchors, num_classes]));
+  let box_xy = tf.sigmoid(feats.slice([0,0,0,0], [conv_dims_0, conv_dims_1, num_anchors, 2]))
+  let box_wh = tf.exp(feats.slice([0,0,0, 2], [conv_dims_0, conv_dims_1, num_anchors, 2]))
+  const box_confidence = tf.sigmoid(feats.slice([0,0,0, 4], [conv_dims_0, conv_dims_1, num_anchors, 1]))
+  const box_class_probs = tf.softmax(feats.slice([0,0,0, 5],[conv_dims_0, conv_dims_1, num_anchors, num_classes]));
 
-  box_xy = tfjs.div(tfjs.add(box_xy, conv_index), conv_dims);
-  box_wh = tfjs.div(tfjs.mul(box_wh, anchors_tensor), conv_dims);
+  box_xy = tf.div(tf.add(box_xy, conv_index), conv_dims);
+  box_wh = tf.div(tf.mul(box_wh, anchors_tensor), conv_dims);
 
   return [ box_xy, box_wh, box_confidence, box_class_probs ];
 }
