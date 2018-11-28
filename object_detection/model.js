@@ -61,7 +61,8 @@ async function my_model(
     model = tf.loadFrozenModel(DEFAULT_GRAPH_LOCATION, DEFAULT_WEIGHTS_LOCATION)
   } = {},
 ) {
-  const outs = tf.tidy(() => { // Keep as one var to dispose easier
+    console.log(model);
+    const outs = tf.tidy(() => { // Keep as one var to dispose easier
     const activation = model.execute({input: tf.fromPixels(input)});
 
     const [box_xy, box_wh, box_confidence, box_class_probs ] =
