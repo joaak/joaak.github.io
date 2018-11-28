@@ -1,7 +1,7 @@
 import my_model, { downloadModel } from './model.js';
 
 const model = downloadModel();
-const boxes = await my_model(model);
+const boxes = my_model(model);
 
 boxes.forEach(box => {
   const {
