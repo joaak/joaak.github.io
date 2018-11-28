@@ -17,7 +17,7 @@ const MODEL_URL = './model_js/tensorflowjs_model.pb'
 const WEIGHTS_URL = './model_js/weights_manifest.json'
 
 export async function downloadModel() {
-  return await tf.loadModel(tf.loadFrozenModel(MODEL_URL, WEIGHTS_URL));
+  return await tf.loadFrozenModel(MODEL_URL, WEIGHTS_URL);
 }
 
 /**
