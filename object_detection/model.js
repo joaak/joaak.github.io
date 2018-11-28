@@ -13,8 +13,8 @@ const DEFAULT_MAX_BOXES = 2048; // TODO: Check note later.
 const DEFAULT_FILTER_BOXES_THRESHOLD = 0.01;
 const DEFAULT_IOU_THRESHOLD = 0.4;
 const DEFAULT_CLASS_PROB_THRESHOLD = 0.4
-const DEFAULT_GRAPH_LOCATION = './model_js/tensorflowjs_model.pb'
-const DEFAULT_WEIGHTS_LOCATION = './model_js/weights_manifest.json'
+const MODEL_URL = './model_js/tensorflowjs_model.pb'
+const WEIGHTS_URL = './model_js/weights_manifest.json'
 const DEFAULT_INPUT = document.getElementById("myCanvas")
 
 /**
@@ -58,8 +58,7 @@ async function my_model(
     height: heightPx = DEFAULT_INPUT_DIM,
     numClasses = 80,
     classNames = class_names,
-    model = tf.loadFrozenModel(DEFAULT_GRAPH_LOCATION, DEFAULT_WEIGHTS_LOCATION)
-    console.log(typeof model);
+    model = tf.loadFrozenModel(MODEL_URL, WEIGHTS_URL);
   } = {},
 ) 
 {
