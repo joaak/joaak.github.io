@@ -3,9 +3,9 @@ import {
   model_head,
   model_filter_boxes,
   model_ANCHORS,
-} from './postprocess';
+} from './postprocess.js';
 
-import class_names from './coco_classes';
+import class_names from './coco_classes.js';
 
 const DEFAULT_INPUT_DIM = 416;
 
