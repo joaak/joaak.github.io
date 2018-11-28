@@ -60,7 +60,9 @@ async function my_model(
     classNames = class_names,
     model = tf.loadFrozenModel(DEFAULT_GRAPH_LOCATION, DEFAULT_WEIGHTS_LOCATION)
   } = {},
-) {
+) 
+console.log(typeof model);
+{
 
     const outs = tf.tidy(() => { // Keep as one var to dispose easier
     const activation = model.execute({input: tf.fromPixels(input)});
