@@ -1,4 +1,4 @@
-import my_model, { downloadModel } from './model.js';
+import my_model from './model.js';
 
 // const model = downloadModel();
 // console.log(model);
