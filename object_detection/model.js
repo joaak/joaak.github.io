@@ -21,7 +21,7 @@ const DEFAULT_INPUT = document.getElementById("myCanvas")
  * Downloads a tf.Model
  * @param {String} url Trained Model URL
  */
-async function downloadModel(model_url = DEFAULT_GRAPH_LOCATION, weights_url = DEFAULT_WEIGHTS_LOCATION) {
+export async function downloadModel(model_url = DEFAULT_GRAPH_LOCATION, weights_url = DEFAULT_WEIGHTS_LOCATION) {
   return await tf.loadFrozenModel(model_url, weights_url);
 }
 
@@ -149,13 +149,4 @@ async function my_model(
   console.log(results);
 }
 
-const model = await downloadModel();
-const boxes = await my_model(model);
-
-boxes.forEach(box => {
-  const {
-    top, left, bottom, right, classProb, className,
-  } = box;
-
-  drawRect(left, top, right-left, bottom-top, `${className} ${classProb}`)
-});
+export default my_model;
