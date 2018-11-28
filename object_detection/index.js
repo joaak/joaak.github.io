@@ -2,7 +2,7 @@ import my_model from './model.js';
 
 // const model = downloadModel();
 // console.log(model);
-const boxes = my_model(model);
+const boxes = my_model();
 console.log(boxes);
 
 boxes.forEach(box => {
