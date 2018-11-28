@@ -70,7 +70,7 @@ async function my_model(
   } = {},
 ) {
   const outs = tf.tidy(() => { // Keep as one var to dispose easier
-    const activation = model.predict(input);
+    const activation = model.execute({input: tf.fromPixels(input)});
 
     const [box_xy, box_wh, box_confidence, box_class_probs ] =
       model_head(activation, modelAnchors, numClasses);
