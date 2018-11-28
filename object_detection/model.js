@@ -145,8 +145,7 @@ async function my_model(
     results.push(resultObj);
   });
 
-  return results;
-  console.log(results);
+  return await results;
 }
 
 export default downloadModel;
