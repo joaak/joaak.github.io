@@ -1,106 +1,23 @@
 
-<!DOCTYPE html>
+<!doctype html>
+
 <html>
   <head>
   </head>
   <body onload="init();">
-    <h1> Take a snapshot of the current video stream </h1>
+    <h1>Take a snapshot of the current video stream</h1>
    Click on the Start WebCam button.
      <p>
-       <button onclick="startWebcam();"> Start WebCam </button>
-       <button onclick="stopWebcam();"> Stop WebCam </button> 
-       <button onclick="snapshot();"> Take Snapshot </button> 
+    <button onclick="startWebcam();">Start WebCam</button>
+    <button onclick="stopWebcam();">Stop WebCam</button> 
+       <button onclick="snapshot();">Take Snapshot</button> 
     </p>
     <video onclick="snapshot(this);" width=400 height=400 id="video" controls autoplay></video>
   <p>
 
         Screenshots : <p>
-      <canvas  id="myCanvas" width="224" height="224"></canvas>  
-  
-  </body>
-  
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest">
-  
-      //--------------------
-      // GET USER MEDIA CODE
-      //--------------------
-      
-      navigator.getUserMedia = (navigator.getUserMedia ||
-                                navigator.webkitGetUserMedia ||
-                                navigator.mozGetUserMedia ||
-                                navigator.msGetUserMedia);
+      <canvas  id="myCanvas" width="416" height="416"></canvas>  
 
-      var video;
-      var webcamStream;
-
-      function startWebcam() {
-        if (navigator.getUserMedia) {
-           navigator.getUserMedia (
-
-              // constraints
-              {
-                 video: true,
-                 audio: false
-              },
-
-              // successCallback
-              function(localMediaStream) {
-                 video = document.querySelector('video');
-                 video.src = window.URL.createObjectURL(localMediaStream);
-                 webcamStream = localMediaStream;
-              },
-
-              // errorCallback
-              function(err) {
-                 console.log("The following error occured: " + err);
-              }
-           );
-        } else {
-           console.log("getUserMedia not supported");
-        }  
-      }
-
-      function stopWebcam() {
-          webcamStream.stop();
-      }
-      
-      //---------------------
-      // TAKE A SNAPSHOT CODE
-      //---------------------
-      
-      var canvas, ctx;
-
-      function init() {
-        // Get the canvas and obtain a context for
-        // drawing in it
-        canvas = document.getElementById("myCanvas");
-        ctx = canvas.getContext('2d');
-        
-      }
-
-      function snapshot() {
-         // Draws current image from the video element into the canvas
-        ctx.drawImage(video, 0,0, canvas.width, canvas.height);
-        console.log(video);
-      }
-    
-      //------------
-      // MODEL STUFF
-      //------------
-      
-      const model = await tfjs.loadModel({
-      'modelTopology': model_js/tensorflowjs_model.pb
-      'weightsManifest': model_js/weights_manifest.json
-      });
-      
-      const image = document.getElementById(‘myCanvas’);
-      const input = tfjs.fromPixels(image);
-      
-      model.predict(input).print();
-      
-      console.log(input)
-      console.log(model)
-      
-  </script>
-  
-</html>
+  <script src='https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js'></script>
+  <script src='index.js'></script>
+</body>
