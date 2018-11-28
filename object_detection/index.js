@@ -42,7 +42,7 @@ export async function downloadModel(model_url = DEFAULT_GRAPH_LOCATION, weights_
  * @param {Number} [options.maxBoxes=2048] Number of max boxes to
  * return, refer to tfjs.image.nonMaxSuppression. Note: The model
  * itself can only return so many boxes.
- * @param {tfjs.Tensor} [options.modelAnchors=See src/postprocessing.js]
+ * @param {tfjs.Tensor} [options.modelAnchors=See src/preprocessing.js]
  * (Advanced) Model Anchor
  * Boxes, only needed if retraining on a new dataset
  * @param {Number} [options.width=416] (Advanced) If your model's input width is not 416, only if you're using a custom model
