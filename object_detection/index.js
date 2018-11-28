@@ -1,9 +1,3 @@
-
-
-//------------
-// MODEL STUFF
-//------------
-
 import {
   model_boxes_to_corners,
   model_head,
