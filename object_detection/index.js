@@ -4,8 +4,6 @@
 // MODEL STUFF
 //------------
 
-import * as tf from '@tensorflow/tfjs';
-
 import {
   model_boxes_to_corners,
   model_head,
@@ -26,31 +24,31 @@ const DEFAULT_WEIGHTS_LOCATION = 'model_js/weights_manifest.json'
 const DEFAULT_INPUT = document.getElementById("myCanvas")
 
 /**
- * Downloads a tf.Model
+ * Downloads a tfjs.Model
  * @param {String} url Trained Model URL
  */
 export async function downloadModel(model_url = DEFAULT_GRAPH_LOCATION, weights_url = DEFAULT_WEIGHTS_LOCATION) {
-  return await tf.loadFrozenModel(model_url, weights_url);
+  return await tfjs.loadFrozenModel(model_url, weights_url);
 }
 
 /**
  * Given an input image and model, outputs bounding boxes of detected
  * objects with class labels and class probabilities.
- * @param {tf.Tensor} input Expected shape (1, 416, 416, 3)
+ * @param {tfjs.Tensor} input Expected shape (1, 416, 416, 3)
  * Tensor representing input image (RGB 416x416)
- * @param {tf.Model} model Model to use
+ * @param {tfjs.Model} model Model to use
  * @param {Object} [options] Override options for customized
  * models or performance
  * @param {Number} [options.classProbThreshold=0.4] Filter out classes
  * below a certain threshold
  * @param {Number} [options.iouThreshold=0.4] Filter out boxes that
- * have an IoU greater than this threadhold (refer to tf.image.nonMaxSuppression)
+ * have an IoU greater than this threadhold (refer to tfjs.image.nonMaxSuppression)
  * @param {Number} [options.filterBoxesThreshold=0.01] Threshold to
  * filter out box confidence * class confidence
  * @param {Number} [options.maxBoxes=2048] Number of max boxes to
- * return, refer to tf.image.nonMaxSuppression. Note: The model
+ * return, refer to tfjs.image.nonMaxSuppression. Note: The model
  * itself can only return so many boxes.
- * @param {tf.Tensor} [options.modelAnchors=See src/postprocessing.js]
+ * @param {tfjs.Tensor} [options.modelAnchors=See src/postprocessing.js]
  * (Advanced) Model Anchor
  * Boxes, only needed if retraining on a new dataset
  * @param {Number} [options.width=416] (Advanced) If your model's input width is not 416, only if you're using a custom model
@@ -77,7 +75,7 @@ async function my_model(
     classNames = class_names,
   } = {},
 ) {
-  const outs = tf.tidy(() => { // Keep as one var to dispose easier
+  const outs = tfjs.tidy(() => { // Keep as one var to dispose easier
     const activation = model.predict(input);
 
     const [box_xy, box_wh, box_confidence, box_class_probs ] =
@@ -93,12 +91,12 @@ async function my_model(
       return null;
     }
 
-    const width = tf.scalar(widthPx);
-    const height = tf.scalar(heightPx);
+    const width = tfjs.scalar(widthPx);
+    const height = tfjs.scalar(heightPx);
 
-    const image_dims = tf.stack([height, width, height, width]).reshape([1,4]);
+    const image_dims = tfjs.stack([height, width, height, width]).reshape([1,4]);
 
-    boxes = tf.mul(boxes, image_dims);
+    boxes = tfjs.mul(boxes, image_dims);
 
     return [boxes, scores, classes];
   });
@@ -109,7 +107,7 @@ async function my_model(
 
   const [boxes, scores, classes] = outs;
 
-  const indices = await tf.image.nonMaxSuppressionAsync(boxes, scores, maxBoxes, iouThreshold)
+  const indices = await tfjs.image.nonMaxSuppressionAsync(boxes, scores, maxBoxes, iouThreshold)
 
   // Pick out data that wasn't filtered out by NMS and put them into
   // CPU land to pass back to consumer
@@ -117,7 +115,7 @@ async function my_model(
   const keep_scores = await scores.gather(indices).data();
   const boxes_arr = await boxes.gather(indices).data();
 
-  tf.dispose(outs);
+  tfjs.dispose(outs);
   indices.dispose();
 
   const results = [];
