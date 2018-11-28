@@ -18,14 +18,6 @@ const DEFAULT_WEIGHTS_LOCATION = 'model_js/weights_manifest.json'
 const DEFAULT_INPUT = document.getElementById("myCanvas")
 
 /**
- * Downloads a tf.Model
- * @param {String} url Trained Model URL
- */
-export async function downloadModel(model_url = DEFAULT_GRAPH_LOCATION, weights_url = DEFAULT_WEIGHTS_LOCATION) {
-  return await tf.loadFrozenModel(model_url, weights_url);
-}
-
-/**
  * Given an input image and model, outputs bounding boxes of detected
  * objects with class labels and class probabilities.
  * @param {tf.Tensor} input Expected shape (1, 416, 416, 3)
@@ -56,7 +48,6 @@ export async function downloadModel(model_url = DEFAULT_GRAPH_LOCATION, weights_
  */
 async function my_model(
   input = DEFAULT_INPUT,
-  model,
   {
     classProbThreshold = DEFAULT_CLASS_PROB_THRESHOLD,
     iouThreshold = DEFAULT_IOU_THRESHOLD,
@@ -67,6 +58,7 @@ async function my_model(
     height: heightPx = DEFAULT_INPUT_DIM,
     numClasses = 80,
     classNames = class_names,
+    model = tf.loadFrozenModel(DEFAULT_GRAPH_LOCATION, DEFAULT_WEIGHTS_LOCATION)
   } = {},
 ) {
   const outs = tf.tidy(() => { // Keep as one var to dispose easier
