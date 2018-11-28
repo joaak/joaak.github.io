@@ -13,8 +13,8 @@ const DEFAULT_MAX_BOXES = 2048; // TODO: Check note later.
 const DEFAULT_FILTER_BOXES_THRESHOLD = 0.01;
 const DEFAULT_IOU_THRESHOLD = 0.4;
 const DEFAULT_CLASS_PROB_THRESHOLD = 0.4
-const DEFAULT_GRAPH_LOCATION = 'model_js/tensorflowjs_model.pb'
-const DEFAULT_WEIGHTS_LOCATION = 'model_js/weights_manifest.json'
+const DEFAULT_GRAPH_LOCATION = './model_js/tensorflowjs_model.pb'
+const DEFAULT_WEIGHTS_LOCATION = './model_js/weights_manifest.json'
 const DEFAULT_INPUT = document.getElementById("myCanvas")
 
 /**
