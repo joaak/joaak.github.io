@@ -19,7 +19,7 @@
   
   </body>
   
-  <script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest">
   
       //--------------------
       // GET USER MEDIA CODE
@@ -83,10 +83,6 @@
         ctx.drawImage(video, 0,0, canvas.width, canvas.height);
         console.log(video);
       }
-      
-  </script>
-  
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"> 
     
       //------------
       // MODEL STUFF
@@ -101,6 +97,10 @@
       const input = tfjs.fromPixels(image);
       
       model.predict(input).print();
+      
+      console.log(input)
+      console.log(model)
+      
   </script>
   
 </html>
