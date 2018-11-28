@@ -58,10 +58,10 @@ async function my_model(
     height: heightPx = DEFAULT_INPUT_DIM,
     numClasses = 80,
     classNames = class_names,
-    model = tf_converter.loadFrozenModel(DEFAULT_GRAPH_LOCATION, DEFAULT_WEIGHTS_LOCATION)
+    model = await tf.loadFrozenModel(DEFAULT_GRAPH_LOCATION, DEFAULT_WEIGHTS_LOCATION)
   } = {},
 ) {
-    console.log(model);
+
     const outs = tf.tidy(() => { // Keep as one var to dispose easier
     const activation = model.execute({input: tf.fromPixels(input)});
 
