@@ -3,7 +3,7 @@ import {
   model_head,
   model_filter_boxes,
   model_ANCHORS,
-} from './postprocess.js';
+} from './preprocess.js';
 
 import class_names from './coco_classes.js';
 
