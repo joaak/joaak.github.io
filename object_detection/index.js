@@ -146,6 +146,7 @@ async function my_model(
   });
 
   return results;
+  console.log(results);
 }
 
 export default my_model;
