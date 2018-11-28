@@ -58,7 +58,7 @@ async function my_model(
     height: heightPx = DEFAULT_INPUT_DIM,
     numClasses = 80,
     classNames = class_names,
-    model = tfjs-converter.loadFrozenModel(DEFAULT_GRAPH_LOCATION, DEFAULT_WEIGHTS_LOCATION)
+    model = tf.loadFrozenModel(DEFAULT_GRAPH_LOCATION, DEFAULT_WEIGHTS_LOCATION)
   } = {},
 ) {
     console.log(model);
