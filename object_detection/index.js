@@ -1,3 +1,5 @@
+import * as tfjs from '@tensorflow/tfjs';
+
 import {
   model_boxes_to_corners,
   model_head,
