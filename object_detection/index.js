@@ -1,6 +1,6 @@
 import my_model, { downloadModel } from './model.js';
 
-const image = document.document.getElementById("myCanvas");
+const image = document.getElementById("myCanvas");
       
 const model = downloadModel();
 console.log(model);
