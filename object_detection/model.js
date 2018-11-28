@@ -58,7 +58,7 @@ async function my_model(
     height: heightPx = DEFAULT_INPUT_DIM,
     numClasses = 80,
     classNames = class_names,
-    model = tf.loadFrozenModel(MODEL_URL, WEIGHTS_URL);
+    model = tf.loadFrozenModel(MODEL_URL, WEIGHTS_URL),
   } = {},
 ) 
 {
