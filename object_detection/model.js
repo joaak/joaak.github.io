@@ -51,7 +51,7 @@ export async function downloadModel() {
  */
 async function my_model(
   input,
-  model
+  model,
   {
     classProbThreshold = DEFAULT_CLASS_PROB_THRESHOLD,
     iouThreshold = DEFAULT_IOU_THRESHOLD,
