@@ -63,7 +63,6 @@ async function my_model(
     numClasses = 80,
     classNames = class_names,
   } = {},
-) 
 {    
     const outs = tf.tidy(() => { // Keep as one var to dispose easier
     const activation = model.execute({input: tf.fromPixels(input)});
@@ -142,6 +141,6 @@ async function my_model(
   });
 
   return await results;
-}
+});
 
 export default my_model;
