@@ -31,20 +31,10 @@
 
   <script>
 
-      //--------------------
-      // GET USER MEDIA CODE
-      //--------------------
-
-          navigator.mediaDevices.getUserMedia = ( navigator.mediaDevices.getUserMedia ||
-                             navigator.webkitGetUserMedia ||
-                             navigator.mozGetUserMedia ||
-                             navigator.msGetUserMedia);
-
       var video;
       var webcamStream;
 
       function startWebcam() {
-        if (navigator.mediaDevices.getUserMedia) {
            navigator.mediaDevices.getUserMedia (
 
               // constraints
@@ -65,9 +55,6 @@
                  console.log("The following error occured: " + err);
               }
            );
-        } else {
-           console.log("getUserMedia not supported");
-        }
       }
 
       function stopWebcam() {
