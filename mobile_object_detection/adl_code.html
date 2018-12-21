@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Object Detection</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"> </script> <!-- Load tensorflow.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"> </script> <!-- Load the pre-trained model -->
+</head>
+
+<body onload="init();">
+    <!-- Title -->
+    <div class="container-fluid">
+        <h2>Object Detection</h2>
+    </div>
+
+    <!-- Instructions -->
+    <div class="container-fluid">
+        <h4>Instructions:</h4>
+        0. If using a mobile device, please orient your phone in landscape mode <br>
+        1. Click on "Start Webcam" <br>
+        2. Point Camera at scene of interest and click "Take Snapshot" <br>
+        3. Click on "Stop Webcam" to stop webcam feed (optional)<br>
+        4. Scroll Down and click on "Detect Objects"
+    </div>
+
+    <!-- Buttons -->
+    <div class="container-fluid" style="padding-top: 1em; padding-bottom: 1em;">
+        <button class="btn btn-default" onclick="startWebcam();"> Start WebCam</button>
+        <button class="btn btn-default" onclick="snapshot();">Take Snapshot</button>
+        <button class="btn btn-default" onclick="stopWebcam();"> Stop WebCam</button>
+
+    </div>
+    <div class="container-fluid" style="padding-top: 1em; padding-bottom: 1em;">
+        <video onclick="snapshot(this);" width=80% id="video" controls autoplay></video>
+    </div>
+
+    <!-- Canvas -->
+    <div class="container-fluid">
+        <h4>Snapshot:</h4>
+        <canvas id="myCanvas" width=600 height=400></canvas>
+    </div>
+
+    <!-- Detect Objects Button -->
+    <div class="container-fluid" style="padding-top: 1em; padding-bottom: 1em;">
+        <button class="btn btn-primary btn-lg" onclick="detect_objects();"> Detect Objects</button>
+    </div>
+
+
+    <!-- Status -->
+    <div class="container-fluid">
+        <span id="status"> </span>
+    </div>
+
+
+    <!-- Results -->
+    <div class="container-fluid">
+        <p id="showPreds"> </p>
+    </div>
+
+    <!-- All the JS -->
+    <script>
+        //--------------------
+        // GET USER MEDIA CODE
+        //--------------------
+        let video;
+        let webcamStream;
+
+        let constraints = {
+                    video: {facingMode : "environment"},
+                    audio: false
+                };
+
+        function startWebcam() {
+            if (navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia (constraints)
+                .then(function(localMediaStream) {
+                    video = document.querySelector('video');
+                    //video = document.createElement('video');
+                    //video.src = window.URL.createObjectURL(localMediaStream);
+                    video.srcObject = localMediaStream;
+                    webcamStream = localMediaStream;
+                })
+                .catch(function(err) {
+                    console.log("getUserMedia error" + err);
+                });
+
+            } else {
+                console.log("getUserMedia not supported");
+            }
+        }
+
+        function stopWebcam() {
+            webcamStream.getTracks()[0].stop();
+        }
+        //---------------------
+        // TAKE A SNAPSHOT CODE
+        //---------------------
+        let canvas, ctx;
+
+        function init() {
+            canvas = document.getElementById("myCanvas");
+            ctx = canvas.getContext('2d');
+        }
+
+        function snapshot() {
+            clear();
+            ctx.drawImage(video, 0,0, canvas.width, canvas.height);
+        }
+
+        function status(statusText) {
+            document.getElementById('status').textContent = statusText;
+        }
+
+        //----------------
+        // Bounding boxes
+        //----------------
+
+        function printObject(o) {
+            var out = '';
+            for (i = 0; i < o.length; i++) {
+            for (var p in o[i]) {
+                if (p != 'bbox') {
+                out += p + ': ' + o[i][p];
+            }
+            out +='<br>'
+            }
+            }
+            return out;
+        }
+        //----------------
+        // Text to speech
+        //----------------
+        function textToSpeech(o){
+            for (i = 0; i < o.length; i++) {
+                let text = o[i]['class'] + ' with probability ' + o[i]['score'].toFixed(2)  + ' ';
+                let msg = new SpeechSynthesisUtterance(text)
+                //let voices = window.speechSynthesis.getVoices();
+                //msg.voice = voices[4]
+                speechSynthesis.speak(msg);
+            }
+        }
+        //----------------
+        // Draw Boxes
+        //----------------
+
+
+        function drawBoxes(result) {
+            const image = document.getElementById('myCanvas');
+            // const c = document.getElementById('canvas');
+            const context = image.getContext('2d');
+            context.drawImage(image, 0, 0);
+            context.font = '10px Arial';
+
+            console.log('number of detections: ', result.length);
+            for (let i = 0; i < result.length; i++) {
+                context.beginPath();
+                context.rect(...result[i].bbox);
+                context.lineWidth = 1;
+                context.strokeStyle = 'red';
+                context.fillStyle = 'red';
+                context.stroke();
+                context.fillText(
+                    result[i].score.toFixed(3) + ' ' + result[i].class, result[i].bbox[0],
+                    result[i].bbox[1] > 10 ? result[i].bbox[1] - 5 : 10);
+            }
+        }
+
+        function clear(){
+            document.getElementById("showPreds").innerHTML = "";
+            status("");
+        }
+        //---------------------------------
+        // Call model and make predictions
+        //---------------------------------
+
+        function detect_objects() {
+            status("Detecting Objects, Please Wait...")
+            const img = document.getElementById('myCanvas');
+            // Load the model.
+            cocoSsd.load().then(model => {
+                // detect objects in the image.
+                model.detect(img).then(predictions => {
+                status("");
+                drawBoxes(predictions);
+                document.getElementById("showPreds").innerHTML = printObject(predictions);
+                textToSpeech(predictions);
+                });
+            });
+        }
+    </script>
+
+
+</body>
+</html>
